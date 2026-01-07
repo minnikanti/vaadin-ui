@@ -1,0 +1,43 @@
+node_modules
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# The following files are generated/updated by vaadin-maven-plugin or vaadin-gradle-plugin
+node_modules/
+src/main/frontend/
+src/main/bundles/
+pnpmfile.js
+.npmrc
+webpack.generated.js
+vite.generated.ts
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/

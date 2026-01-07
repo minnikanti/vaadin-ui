@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Test1",
+    "description": "Test1 Description",
+    "icon": "CHECK",
+    "route": ""
+  },
+  {
+    "title": "Test2",
+    "description": "Test2 Description",
+    "icon": "HOME",
+    "route": ""
+  },
+  {
+    "title": "Example",
+    "description": "Explore the example pages with route navigation links displayed in the header next to the dashboard button.",
+    "icon": "LAPTOP",
+    "route": "example",
+    "subItems": [
+      {
+        "title": "Example 1",
+        "route": "example1"
+      },
+      {
+        "title": "Example 2",
+        "route": "example2"
+      }
+    ]
+  }
+]
