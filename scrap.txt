@@ -1,27 +1,91 @@
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.annotation.RouteScope;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import org.springframework.core.annotation.AliasFor;
+package com.example.components;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.dom.ThemeList;
+import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.theme.lumo.Lumo;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Route
-@SpringComponent
-@RouteScope
-public @interface FreshRoute {
+public class ThemeSwitcher extends Div {
     
-    @AliasFor(annotation = Route.class, attribute = "value")
-    String value() default "";
+    private static final String THEME_KEY = "app.theme";
+    private static final String DARK_THEME = Lumo.DARK;
+    private Button toggleButton;
     
-    @AliasFor(annotation = Route.class, attribute = "layout")
-    Class<? extends com.vaadin.flow.component.Component> layout() 
-        default com.vaadin.flow.component.Component.class;
+    public ThemeSwitcher() {
+        initComponent();
+        applyStoredTheme();
+    }
     
-    @AliasFor(annotation = Route.class, attribute = "registerAtStartup")
-    boolean registerAtStartup() default true;
+    private void initComponent() {
+        toggleButton = new Button();
+        toggleButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        toggleButton.addClickListener(e -> toggleTheme());
+        
+        updateButtonAppearance();
+        add(toggleButton);
+    }
+    
+    private void toggleTheme() {
+        ThemeList themeList = UI.getCurrent().getElement().getThemeList();
+        
+        if (themeList.contains(DARK_THEME)) {
+            // Switch to light theme
+            themeList.remove(DARK_THEME);
+            storeTheme(false);
+        } else {
+            // Switch to dark theme
+            themeList.add(DARK_THEME);
+            storeTheme(true);
+        }
+        
+        updateButtonAppearance();
+    }
+    
+    private void updateButtonAppearance() {
+        ThemeList themeList = UI.getCurrent().getElement().getThemeList();
+        boolean isDark = themeList.contains(DARK_THEME);
+        
+        Icon icon = isDark ? VaadinIcon.SUN_O.create() : VaadinIcon.MOON_O.create();
+        String tooltip = isDark ? "Switch to Light Theme" : "Switch to Dark Theme";
+        
+        toggleButton.setIcon(icon);
+        toggleButton.setTooltipText(tooltip);
+    }
+    
+    private void storeTheme(boolean isDark) {
+        VaadinSession session = VaadinSession.getCurrent();
+        if (session != null) {
+            session.setAttribute(THEME_KEY, isDark);
+        }
+    }
+    
+    private void applyStoredTheme() {
+        VaadinSession session = VaadinSession.getCurrent();
+        if (session != null) {
+            Boolean isDark = (Boolean) session.getAttribute(THEME_KEY);
+            if (isDark != null && isDark) {
+                UI.getCurrent().getElement().getThemeList().add(DARK_THEME);
+                updateButtonAppearance();
+            }
+        }
+    }
+    
+    /**
+     * Static method to apply stored theme on app initialization
+     * Call this in your MainLayout or AppShellConfigurator
+     */
+    public static void applyStoredThemeStatic(UI ui) {
+        VaadinSession session = VaadinSession.getCurrent();
+        if (session != null) {
+            Boolean isDark = (Boolean) session.getAttribute(THEME_KEY);
+            if (isDark != null && isDark) {
+                ui.getElement().getThemeList().add(DARK_THEME);
+            }
+        }
+    }
 }
